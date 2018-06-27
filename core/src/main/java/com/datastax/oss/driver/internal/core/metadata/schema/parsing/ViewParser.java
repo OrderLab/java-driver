@@ -40,15 +40,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ThreadSafe
-class ViewParser extends RelationParser {
+public class ViewParser extends RelationParser {
 
   private static final Logger LOG = LoggerFactory.getLogger(ViewParser.class);
 
-  ViewParser(SchemaRows rows, DataTypeParser dataTypeParser, InternalDriverContext context) {
-    super(rows, dataTypeParser, context);
+  public ViewParser(SchemaRows rows, InternalDriverContext context) {
+    super(rows, context);
   }
 
-  ViewMetadata parseView(
+  public ViewMetadata parseView(
       AdminRow viewRow, CqlIdentifier keyspaceId, Map<CqlIdentifier, UserDefinedType> userTypes) {
     // Cassandra 3.0 (no views in earlier versions):
     // CREATE TABLE system_schema.views (
@@ -87,7 +87,7 @@ class ViewParser extends RelationParser {
 
     List<RawColumn> rawColumns =
         RawColumn.toRawColumns(
-            rows.columns.getOrDefault(keyspaceId, ImmutableMultimap.of()).get(viewId),
+            rows.columns().getOrDefault(keyspaceId, ImmutableMultimap.of()).get(viewId),
             keyspaceId,
             userTypes);
     if (rawColumns.isEmpty()) {
@@ -106,7 +106,7 @@ class ViewParser extends RelationParser {
         ImmutableMap.builder();
 
     for (RawColumn raw : rawColumns) {
-      DataType dataType = dataTypeParser.parse(keyspaceId, raw.dataType, userTypes, context);
+      DataType dataType = rows.dataTypeParser().parse(keyspaceId, raw.dataType, userTypes, context);
       ColumnMetadata column =
           new DefaultColumnMetadata(
               keyspaceId, viewId, raw.name, dataType, raw.kind == RawColumn.Kind.STATIC);

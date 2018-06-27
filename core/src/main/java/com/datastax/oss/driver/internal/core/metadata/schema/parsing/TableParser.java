@@ -48,15 +48,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ThreadSafe
-class TableParser extends RelationParser {
+public class TableParser extends RelationParser {
 
   private static final Logger LOG = LoggerFactory.getLogger(TableParser.class);
 
-  TableParser(SchemaRows rows, DataTypeParser dataTypeParser, InternalDriverContext context) {
-    super(rows, dataTypeParser, context);
+  public TableParser(SchemaRows rows, InternalDriverContext context) {
+    super(rows, context);
   }
 
-  TableMetadata parseTable(
+  public TableMetadata parseTable(
       AdminRow tableRow, CqlIdentifier keyspaceId, Map<CqlIdentifier, UserDefinedType> userTypes) {
     // Cassandra <= 2.2:
     // CREATE TABLE system.schema_columnfamilies (
@@ -119,13 +119,14 @@ class TableParser extends RelationParser {
     // ) WITH CLUSTERING ORDER BY (table_name ASC)
     CqlIdentifier tableId =
         CqlIdentifier.fromInternal(
-            tableRow.getString(rows.isCassandraV3 ? "table_name" : "columnfamily_name"));
+            tableRow.getString(
+                tableRow.contains("table_name") ? "table_name" : "columnfamily_name"));
 
     UUID uuid = (tableRow.contains("id")) ? tableRow.getUuid("id") : tableRow.getUuid("cf_id");
 
     List<RawColumn> rawColumns =
         RawColumn.toRawColumns(
-            rows.columns.getOrDefault(keyspaceId, ImmutableMultimap.of()).get(tableId),
+            rows.columns().getOrDefault(keyspaceId, ImmutableMultimap.of()).get(tableId),
             keyspaceId,
             userTypes);
     if (rawColumns.isEmpty()) {
@@ -169,7 +170,7 @@ class TableParser extends RelationParser {
     ImmutableMap.Builder<CqlIdentifier, IndexMetadata> indexesBuilder = ImmutableMap.builder();
 
     for (RawColumn raw : rawColumns) {
-      DataType dataType = dataTypeParser.parse(keyspaceId, raw.dataType, userTypes, context);
+      DataType dataType = rows.dataTypeParser().parse(keyspaceId, raw.dataType, userTypes, context);
       ColumnMetadata column =
           new DefaultColumnMetadata(
               keyspaceId, tableId, raw.name, dataType, raw.kind == RawColumn.Kind.STATIC);
@@ -208,7 +209,7 @@ class TableParser extends RelationParser {
     }
 
     Collection<AdminRow> indexRows =
-        rows.indexes.getOrDefault(keyspaceId, ImmutableMultimap.of()).get(tableId);
+        rows.indexes().getOrDefault(keyspaceId, ImmutableMultimap.of()).get(tableId);
     for (AdminRow indexRow : indexRows) {
       IndexMetadata index = buildModernIndex(keyspaceId, tableId, indexRow);
       indexesBuilder.put(index.getName(), index);

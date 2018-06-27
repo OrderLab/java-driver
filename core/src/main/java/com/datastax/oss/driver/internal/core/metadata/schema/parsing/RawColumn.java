@@ -32,9 +32,9 @@ import net.jcip.annotations.NotThreadSafe;
  * instances.
  */
 @NotThreadSafe
-class RawColumn implements Comparable<RawColumn> {
+public class RawColumn implements Comparable<RawColumn> {
 
-  static List<RawColumn> toRawColumns(
+  public static List<RawColumn> toRawColumns(
       Collection<AdminRow> rows,
       CqlIdentifier keyspaceId,
       Map<CqlIdentifier, UserDefinedType> userTypes) {
@@ -50,7 +50,7 @@ class RawColumn implements Comparable<RawColumn> {
     }
   }
 
-  enum Kind {
+  public enum Kind {
     PARTITION_KEY,
     CLUSTERING_COLUMN,
     REGULAR,
@@ -74,14 +74,14 @@ class RawColumn implements Comparable<RawColumn> {
     }
   }
 
-  final CqlIdentifier name;
-  Kind kind;
-  final int position;
-  final String dataType;
-  final boolean reversed;
-  final String indexName;
-  final String indexType;
-  final Map<String, String> indexOptions;
+  public final CqlIdentifier name;
+  public Kind kind;
+  public final int position;
+  public final String dataType;
+  public final boolean reversed;
+  public final String indexName;
+  public final String indexType;
+  public final Map<String, String> indexOptions;
 
   private RawColumn(
       AdminRow row, CqlIdentifier keyspaceId, Map<CqlIdentifier, UserDefinedType> userTypes) {
