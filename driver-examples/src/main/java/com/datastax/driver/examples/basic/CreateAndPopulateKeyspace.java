@@ -35,21 +35,23 @@ import com.datastax.driver.core.Session;
  */
 public class CreateAndPopulateKeyspace {
 
-    static String[] CONTACT_POINTS = {"127.0.0.1"};
-    static int PORT = 9042;
+    static String[] CONTACT_POINTS = {"10.0.0.23"};
+    static int PORT = 9160;
 
     public static void main(String[] args) {
 
         CreateAndPopulateKeyspace client = new CreateAndPopulateKeyspace();
 
+	System.out.println("test");
         try {
-
             client.connect(CONTACT_POINTS, PORT);
             client.createSchema();
             client.loadData();
             client.querySchema();
 
-        } finally {
+        } catch (Error e) {
+            e.printStackTrace();
+	} finally {
             client.close();
         }
     }
@@ -67,11 +69,13 @@ public class CreateAndPopulateKeyspace {
      */
     public void connect(String[] contactPoints, int port) {
 
+	System.out.println("tes2");
         cluster = Cluster.builder()
                 .addContactPoints(contactPoints).withPort(port)
                 .build();
 
         System.out.printf("Connected to cluster: %s%n", cluster.getMetadata().getClusterName());
+	System.out.println("tes3");
 
         session = cluster.connect();
     }
