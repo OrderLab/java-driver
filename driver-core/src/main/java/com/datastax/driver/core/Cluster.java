@@ -113,6 +113,7 @@ public class Cluster implements Closeable {
                 checkNotEmpty(initializer.getContactPoints()),
                 initializer.getConfiguration(),
                 initializer.getInitialListeners());
+        System.out.println("init finished");
     }
 
     private static List<InetSocketAddress> checkNotEmpty(List<InetSocketAddress> contactPoints) {
