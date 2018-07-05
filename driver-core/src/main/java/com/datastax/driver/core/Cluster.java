@@ -1365,6 +1365,7 @@ public class Cluster implements Closeable {
          * @return the newly built Cluster instance.
          */
         public Cluster build() {
+            System.out.println("start to build");
             return Cluster.buildFrom(this);
         }
     }
