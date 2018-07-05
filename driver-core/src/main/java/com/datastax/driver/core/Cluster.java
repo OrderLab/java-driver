@@ -919,8 +919,10 @@ public class Cluster implements Closeable {
          * @see Builder#addContactPoint
          */
         public Builder addContactPoints(String... addresses) {
+            System.out.println("start to addContactPoints");
             for (String address : addresses)
                 addContactPoint(address);
+            System.out.println("finish addContactPoints");
             return this;
         }
 

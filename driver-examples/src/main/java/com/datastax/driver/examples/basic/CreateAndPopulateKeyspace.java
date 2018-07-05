@@ -42,7 +42,7 @@ public class CreateAndPopulateKeyspace {
 
         CreateAndPopulateKeyspace client = new CreateAndPopulateKeyspace();
 
-	System.out.println("test");
+	    System.out.println("test");
         try {
             client.connect(CONTACT_POINTS, PORT);
             client.createSchema();
@@ -51,7 +51,7 @@ public class CreateAndPopulateKeyspace {
 
         } catch (Error e) {
             e.printStackTrace();
-	} finally {
+	    } finally {
             client.close();
         }
     }
@@ -69,13 +69,13 @@ public class CreateAndPopulateKeyspace {
      */
     public void connect(String[] contactPoints, int port) {
 
-	System.out.println("tes2");
+	    System.out.println("tes2");
         cluster = Cluster.builder()
                 .addContactPoints(contactPoints).withPort(port)
                 .build();
 
         System.out.printf("Connected to cluster: %s%n", cluster.getMetadata().getClusterName());
-	System.out.println("tes3");
+	    System.out.println("tes3");
 
         session = cluster.connect();
     }
