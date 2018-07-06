@@ -74,6 +74,7 @@ public class CreateAndPopulateKeyspace {
                 .addContactPoints(contactPoints).withPort(port)
                 .build();
 
+        System.out.println("tes4");
         System.out.printf("Connected to cluster: %s%n", cluster.getMetadata().getClusterName());
 	    System.out.println("tes3");
 
