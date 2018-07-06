@@ -49,7 +49,10 @@ public class CreateAndPopulateKeyspace {
             client.loadData();
             client.querySchema();
 
-        } finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally
+        {
             client.close();
         }
     }
