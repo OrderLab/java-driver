@@ -19,6 +19,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.ProtocolVersion;
 
 /**
  * Creates a keyspace and tables, and loads some data into them.
@@ -35,8 +36,8 @@ import com.datastax.driver.core.Session;
  */
 public class CreateAndPopulateKeyspace {
 
-    static String[] CONTACT_POINTS = {"127.0.0.1"};
-    static int PORT = 9042;
+    static String[] CONTACT_POINTS = {"10.0.0.23"};
+    static int PORT = 9160;
 
     public static void main(String[] args) {
 
@@ -72,6 +73,7 @@ public class CreateAndPopulateKeyspace {
 
         cluster = Cluster.builder()
                 .addContactPoints(contactPoints).withPort(port)
+                .withProtocolVersion(ProtocolVersion.V2)
                 .build();
 
         System.out.printf("Connected to cluster: %s%n", cluster.getMetadata().getClusterName());
