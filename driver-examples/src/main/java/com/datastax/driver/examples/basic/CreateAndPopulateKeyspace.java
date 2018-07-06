@@ -15,10 +15,7 @@
  */
 package com.datastax.driver.examples.basic;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.*;
 
 /**
  * Creates a keyspace and tables, and loads some data into them.
@@ -72,6 +69,7 @@ public class CreateAndPopulateKeyspace {
 	    System.out.println("tes2");
         cluster = Cluster.builder()
                 .addContactPoints(contactPoints).withPort(port)
+                .withProtocolVersion(ProtocolVersion.V2)
                 .build();
 
         System.out.println("tes4");
