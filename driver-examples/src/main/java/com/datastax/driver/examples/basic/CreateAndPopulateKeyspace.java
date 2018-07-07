@@ -36,8 +36,9 @@ import com.datastax.driver.core.ProtocolVersion;
  */
 public class CreateAndPopulateKeyspace {
 
-    static String[] CONTACT_POINTS = {"10.0.0.23"};
-    static int PORT = 9160;
+    //static String[] CONTACT_POINTS = {"10.0.0.23"};
+    static String[] CONTACT_POINTS = {"127.0.0.1"};
+    static int PORT = 9161;
 
     public static void main(String[] args) {
 
