@@ -21,6 +21,8 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.ProtocolVersion;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Creates a keyspace and tables, and loads some data into them.
  * <p/>
@@ -47,7 +49,10 @@ public class CreateAndPopulateKeyspace {
         try {
 
             client.connect(CONTACT_POINTS, PORT);
-            client.createSchema();
+            while (true) {
+                client.createSchema();
+                sleep(1);
+            }
             //client.loadData();
             //client.querySchema();
 
