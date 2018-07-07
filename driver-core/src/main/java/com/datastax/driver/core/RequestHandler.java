@@ -290,6 +290,7 @@ class RequestHandler {
             try {
                 Host host;
                 while (!isDone.get() && (host = queryPlan.next()) != null && !queryStateRef.get().isCancelled()) {
+                    System.out.println("write to "+host.toString());
                     if (query(host))
                         return;
                 }
