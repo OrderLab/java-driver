@@ -38,8 +38,8 @@ import static java.lang.Thread.sleep;
  */
 public class CreateAndPopulateKeyspace {
 
-    //static String[] CONTACT_POINTS = {"10.0.0.23"};
-    static String[] CONTACT_POINTS = {"127.0.0.1"};
+    static String[] CONTACT_POINTS = {"10.0.0.23"};
+    //static String[] CONTACT_POINTS = {"127.0.0.1"};
     static int PORT = 9161;
 
     public static void main(String[] args) {
@@ -51,7 +51,7 @@ public class CreateAndPopulateKeyspace {
             client.connect(CONTACT_POINTS, PORT);
             while (true) {
                 client.createSchema();
-                sleep(1);
+                sleep(1000);
             }
             //client.loadData();
             //client.querySchema();
@@ -93,6 +93,7 @@ public class CreateAndPopulateKeyspace {
      */
     public void createSchema() {
 
+        System.out.println("Create new schema.");
         session.execute("CREATE KEYSPACE IF NOT EXISTS simplex WITH replication " +
                 "= {'class':'SimpleStrategy', 'replication_factor':3};");
 
