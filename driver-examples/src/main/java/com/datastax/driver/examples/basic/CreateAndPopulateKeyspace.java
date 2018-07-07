@@ -48,8 +48,8 @@ public class CreateAndPopulateKeyspace {
 
             client.connect(CONTACT_POINTS, PORT);
             client.createSchema();
-            client.loadData();
-            client.querySchema();
+            //client.loadData();
+            //client.querySchema();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class CreateAndPopulateKeyspace {
     public void createSchema() {
 
         session.execute("CREATE KEYSPACE IF NOT EXISTS simplex WITH replication " +
-                "= {'class':'SimpleStrategy', 'replication_factor':1};");
+                "= {'class':'SimpleStrategy', 'replication_factor':3};");
 
         session.execute(
                 "CREATE TABLE IF NOT EXISTS simplex.songs (" +
