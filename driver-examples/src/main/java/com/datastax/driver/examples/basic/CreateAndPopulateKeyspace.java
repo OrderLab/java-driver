@@ -46,21 +46,22 @@ public class CreateAndPopulateKeyspace {
 
         CreateAndPopulateKeyspace client = new CreateAndPopulateKeyspace();
 
-        try {
+        client.connect(CONTACT_POINTS, PORT);
+        while(true) {
+            try {
 
-            client.connect(CONTACT_POINTS, PORT);
-            while (true) {
-                client.createSchema();
-                sleep(1000);
+                while (true) {
+                    client.createSchema();
+                    sleep(1000);
+                }
+                //client.loadData();
+                //client.querySchema();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                client.close();
             }
-            //client.loadData();
-            //client.querySchema();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally
-        {
-            client.close();
         }
     }
 
