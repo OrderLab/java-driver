@@ -21,6 +21,8 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.ProtocolVersion;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelPromise;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.io.IOException;
@@ -89,7 +91,7 @@ public class CreateAndPopulateKeyspace {
                 //channel.connect(new InetSocketAddress("localhost", REDIRECT_PORT_NUM));
                 while(true) {
                     System.out.println("writeAndFlush to "+address);
-                    channel.writeAndFlush("test");
+                    channel.writeAndFlush("test", new DefaultChannelPromise(channel));
                     sleep(1000);
                 }
             } catch (Exception e) {
