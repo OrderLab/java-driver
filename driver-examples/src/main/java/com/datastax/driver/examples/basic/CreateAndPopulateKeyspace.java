@@ -20,6 +20,13 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.ProtocolVersion;
+import io.netty.channel.Channel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.channels.SocketChannel;
 
 import static java.lang.Thread.sleep;
 
@@ -41,13 +48,19 @@ public class CreateAndPopulateKeyspace {
     static String[] CONTACT_POINTS = {"10.0.0.23"};
     //static String[] CONTACT_POINTS = {"127.0.0.1"};
     static int PORT = 9161;
+    static int REDIRECT_PORT_NUM = 10000;
 
     public static void main(String[] args) {
 
         CreateAndPopulateKeyspace client = new CreateAndPopulateKeyspace();
 
         client.connect(CONTACT_POINTS, PORT);
-        while(true) {
+
+        Thread thread = new Thread(new Watchdog());
+        thread.start();
+
+
+        while (true) {
             try {
 
                 while (true) {
@@ -61,6 +74,25 @@ public class CreateAndPopulateKeyspace {
                 e.printStackTrace();
             } finally {
                 client.close();
+            }
+        }
+    }
+
+    static public class Watchdog implements Runnable {
+        public void run() {
+            System.out.println("Watchdog running");
+            String address = "localhost";
+            SocketChannel socketChannel;
+            try {
+                socketChannel = SocketChannel.open(new InetSocketAddress(address, REDIRECT_PORT_NUM));
+                Channel channel = new NioSocketChannel(socketChannel);
+                //channel.connect(new InetSocketAddress("localhost", REDIRECT_PORT_NUM));
+                while(true) {
+                    channel.writeAndFlush("test");
+                    sleep(1000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
