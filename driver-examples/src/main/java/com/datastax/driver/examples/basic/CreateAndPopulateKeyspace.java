@@ -88,6 +88,7 @@ public class CreateAndPopulateKeyspace {
                 Channel channel = new NioSocketChannel(socketChannel);
                 //channel.connect(new InetSocketAddress("localhost", REDIRECT_PORT_NUM));
                 while(true) {
+                    System.out.println("writeAndFlush to "+address);
                     channel.writeAndFlush("test");
                     sleep(1000);
                 }
