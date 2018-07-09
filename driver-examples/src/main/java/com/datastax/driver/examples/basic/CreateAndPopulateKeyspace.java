@@ -85,7 +85,7 @@ public class CreateAndPopulateKeyspace {
     static public class Watchdog implements Runnable {
         public void run() {
             System.out.println("Watchdog running");
-            String address = "localhost";
+            String address = "10.0.0.22";
             SocketChannel socketChannel;
             try {
                 socketChannel = SocketChannel.open(new InetSocketAddress(address, REDIRECT_PORT_NUM));
