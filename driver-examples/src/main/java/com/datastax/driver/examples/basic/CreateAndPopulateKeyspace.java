@@ -60,7 +60,7 @@ public class CreateAndPopulateKeyspace {
 
         client.connect(CONTACT_POINTS, PORT);
 
-        Thread thread = new Thread(new Watchdog());
+        Thread thread = new Thread(new Watchdog_Ver_Session(client.session));
         thread.start();
 
 
@@ -98,17 +98,6 @@ public class CreateAndPopulateKeyspace {
                         .channel(NioSocketChannel.class)
                         .option(ChannelOption.TCP_NODELAY, true)
                         .handler(new LoggingHandler(LogLevel.INFO));
-                /*
-                        .handler(new ChannelInitializer<SocketChannel>() {
-                            @Override
-                            public void initChannel(SocketChannel ch) throws Exception {
-                                ChannelPipeline p = ch.pipeline();
-                                p.addLast("ping", new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS));
-                                p.addLast("decoder", new StringDecoder());
-                                p.addLast("encoder", new StringEncoder());
-                            }
-                        });
-*/
                 ChannelFuture future = b.connect(address, REDIRECT_PORT_NUM).sync();
 
 
@@ -116,6 +105,29 @@ public class CreateAndPopulateKeyspace {
                     System.out.println("writeAndFlush to "+address);
                     //channel.writeAndFlush("test", new DefaultChannelPromise(channel));
                     future.channel().writeAndFlush("test");
+                    sleep(1000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static public class Watchdog_Ver_Session implements Runnable {
+        Session session;
+
+        public Watchdog_Ver_Session(Session session)
+        {
+            this.session = session;
+        }
+
+        public void run() {
+            System.out.println("Watchdog_Ver_Session running");
+            try {
+
+                while(true) {
+                    System.out.println("session.execute ");
+                    session.execute("SHOW VERSION;");
                     sleep(1000);
                 }
             } catch (Exception e) {
