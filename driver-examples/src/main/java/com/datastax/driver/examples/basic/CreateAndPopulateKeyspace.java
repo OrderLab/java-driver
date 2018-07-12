@@ -16,6 +16,7 @@
 package com.datastax.driver.examples.basic;
 
 import com.datastax.driver.core.*;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -126,8 +127,14 @@ public class CreateAndPopulateKeyspace {
             try {
 
                 while(true) {
-                    System.out.println("session.execute ");
-                    session.execute(";");
+                    System.out.println("session.execute started");
+                    try {
+                        session.execute("select * from system.schema_keyspaces limit 1;");
+                    }catch (InvalidQueryException e)
+                    {
+                        //ignore, since InvalidQueryException means it's already handled
+                    }
+                    System.out.println("session.execute succeeded");
                     sleep(1000);
                 }
             } catch (Exception e) {
