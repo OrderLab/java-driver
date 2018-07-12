@@ -69,7 +69,7 @@ public class CreateAndPopulateKeyspace {
             try {
 
                 while (true) {
-                    client.createSchema();
+                    //client.createSchema();
                     sleep(1000);
                 }
                 //client.loadData();
