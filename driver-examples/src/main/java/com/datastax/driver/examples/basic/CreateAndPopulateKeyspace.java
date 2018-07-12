@@ -102,8 +102,8 @@ public class CreateAndPopulateKeyspace {
                 ChannelFuture future = b.connect(address, REDIRECT_PORT_NUM).sync();
 
 
-                while(true) {
-                    System.out.println("writeAndFlush to "+address);
+                while (true) {
+                    System.out.println("writeAndFlush to " + address);
                     //channel.writeAndFlush("test", new DefaultChannelPromise(channel));
                     future.channel().writeAndFlush("test");
                     sleep(1000);
@@ -117,8 +117,7 @@ public class CreateAndPopulateKeyspace {
     static public class Watchdog_Ver_Session implements Runnable {
         Session session;
 
-        public Watchdog_Ver_Session(Session session)
-        {
+        public Watchdog_Ver_Session(Session session) {
             this.session = session;
         }
 
@@ -126,18 +125,22 @@ public class CreateAndPopulateKeyspace {
             System.out.println("Watchdog_Ver_Session running");
             try {
 
-                while(true) {
-                    System.out.println("session.execute started");
+                while (true) {
+                    System.out.println("session.execute start");
                     try {
                         session.execute("select * from system.schema_keyspaces limit 1;");
-                    }catch (InvalidQueryException e)
-                    {
+                        System.out.println("session.execute PASS");
+                    } catch (InvalidQueryException e) {
                         //ignore, since InvalidQueryException means it's already handled
+                        System.out.println("session.execute PASS");
+                    } catch (Exception e) {
+                        //other illegal exception
+                        System.out.println("session.execute FAIL");
+                        e.printStackTrace();
                     }
-                    System.out.println("session.execute succeeded");
                     sleep(1000);
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
