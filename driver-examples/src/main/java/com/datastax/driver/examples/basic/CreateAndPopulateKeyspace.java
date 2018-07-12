@@ -127,7 +127,7 @@ public class CreateAndPopulateKeyspace {
 
                 while(true) {
                     System.out.println("session.execute ");
-                    session.execute("select * from system.schema_keyspaces limit 1;");
+                    session.execute(";");
                     sleep(1000);
                 }
             } catch (Exception e) {
