@@ -127,7 +127,7 @@ public class CreateAndPopulateKeyspace {
 
                 while(true) {
                     System.out.println("session.execute ");
-                    session.execute("SHOW VERSION;");
+                    session.execute("SELECT * FROM test.test LIMIT 1;");
                     sleep(1000);
                 }
             } catch (Exception e) {
