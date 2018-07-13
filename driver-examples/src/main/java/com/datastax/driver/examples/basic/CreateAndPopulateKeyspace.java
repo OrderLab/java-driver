@@ -74,7 +74,7 @@ public class CreateAndPopulateKeyspace {
         } else if (args[0] == "session") {
             watchdog = new Thread(new Watchdog_Old_Session(client.session));
         } else if (args[0] == "newsession") {
-            watchdog = new Thread(new Watchdog_New_Session(client.session));
+            watchdog = new Thread(new Watchdog_New_Session(client.cluster));
         } else {
             System.out.println("input format: java com.datastax.driver.examples.basic.CreateAndPopulateKeyspace [channel|session|newsession]");
             exit(-1);
