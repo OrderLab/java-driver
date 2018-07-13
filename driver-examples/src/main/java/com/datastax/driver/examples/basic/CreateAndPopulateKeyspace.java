@@ -64,6 +64,10 @@ public class CreateAndPopulateKeyspace {
         Thread thread = new Thread(new Watchdog_Ver_Session(client.session));
         thread.start();
 
+        for (String opt:args)
+        {
+            System.out.println("opt:"+opt);
+        }
 
         while (true) {
             try {
