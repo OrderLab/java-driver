@@ -75,18 +75,29 @@ public class CreateAndPopulateKeyspace {
             watchdog = new Thread(new Watchdog_Old_Session(client.session));
         } else if (args[0].equals("newsession")) {
             watchdog = new Thread(new Watchdog_New_Session(client.cluster));
+        } else if (args[0].equals("none")) {
+            watchdog = null;
         } else {
             System.out.println("input format: java com.datastax.driver.examples.basic.CreateAndPopulateKeyspace [channel|session|newsession]");
             exit(-1);
         }
 
-        watchdog.start();
+        if (watchdog != null)
+            watchdog.start();
+
+        boolean client_flag = true;
+        if (args.length == 2) {
+            if (args[1].equals("stop")) {
+                client_flag = false;
+            }
+        }
 
         while (true) {
             try {
 
                 while (true) {
-                    //client.createSchema();
+                    if (client_flag)
+                        client.createSchema();
                     sleep(1000);
                 }
                 //client.loadData();
@@ -102,7 +113,7 @@ public class CreateAndPopulateKeyspace {
 
     static public class Watchdog implements Runnable {
         public void run() {
-            System.out.println(this.getClass().getSimpleName()+" running");
+            System.out.println(this.getClass().getSimpleName() + " running");
             String address = "10.0.0.22";
             SocketChannel socketChannel;
             try {
@@ -139,7 +150,7 @@ public class CreateAndPopulateKeyspace {
         }
 
         public void run() {
-            System.out.println(this.getClass().getSimpleName()+" running");
+            System.out.println(this.getClass().getSimpleName() + " running");
             try {
 
                 while (true) {
@@ -171,7 +182,7 @@ public class CreateAndPopulateKeyspace {
         }
 
         public void run() {
-            System.out.println(this.getClass().getSimpleName()+" running");
+            System.out.println(this.getClass().getSimpleName() + " running");
             try {
 
                 while (true) {
