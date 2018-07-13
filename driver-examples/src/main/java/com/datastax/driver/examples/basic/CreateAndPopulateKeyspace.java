@@ -69,11 +69,11 @@ public class CreateAndPopulateKeyspace {
             exit(-1);
         }
 
-        if (args[0] == "channel") {
+        if (args[0].equals("channel")) {
             watchdog = new Thread(new Watchdog());
-        } else if (args[0] == "session") {
+        } else if (args[0].equals("session")) {
             watchdog = new Thread(new Watchdog_Old_Session(client.session));
-        } else if (args[0] == "newsession") {
+        } else if (args[0].equals("newsession")) {
             watchdog = new Thread(new Watchdog_New_Session(client.cluster));
         } else {
             System.out.println("input format: java com.datastax.driver.examples.basic.CreateAndPopulateKeyspace [channel|session|newsession]");
