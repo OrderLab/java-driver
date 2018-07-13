@@ -33,6 +33,7 @@ import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.System.exit;
 import static java.lang.Thread.sleep;
 
 /**
@@ -61,13 +62,25 @@ public class CreateAndPopulateKeyspace {
 
         client.connect(CONTACT_POINTS, PORT);
 
-        Thread thread = new Thread(new Watchdog_Ver_Session(client.session));
-        thread.start();
+        Thread watchdog = null;
 
-        for (String opt:args)
-        {
-            System.out.println("opt:"+opt);
+        if (args.length == 0) {
+            System.out.println("input format: java com.datastax.driver.examples.basic.CreateAndPopulateKeyspace [channel|session|newsession]");
+            exit(-1);
         }
+
+        if (args[0] == "channel") {
+            watchdog = new Thread(new Watchdog());
+        } else if (args[0] == "session") {
+            watchdog = new Thread(new Watchdog_Old_Session(client.session));
+        } else if (args[0] == "newsession") {
+            watchdog = new Thread(new Watchdog_New_Session(client.session));
+        } else {
+            System.out.println("input format: java com.datastax.driver.examples.basic.CreateAndPopulateKeyspace [channel|session|newsession]");
+            exit(-1);
+        }
+
+        watchdog.start();
 
         while (true) {
             try {
@@ -89,7 +102,7 @@ public class CreateAndPopulateKeyspace {
 
     static public class Watchdog implements Runnable {
         public void run() {
-            System.out.println("Watchdog running");
+            System.out.println(this.getClass().getSimpleName()+" running");
             String address = "10.0.0.22";
             SocketChannel socketChannel;
             try {
@@ -118,15 +131,47 @@ public class CreateAndPopulateKeyspace {
         }
     }
 
-    static public class Watchdog_Ver_Session implements Runnable {
+    static public class Watchdog_Old_Session implements Runnable {
         Session session;
 
-        public Watchdog_Ver_Session(Session session) {
+        public Watchdog_Old_Session(Session session) {
             this.session = session;
         }
 
         public void run() {
-            System.out.println("Watchdog_Ver_Session running");
+            System.out.println(this.getClass().getSimpleName()+" running");
+            try {
+
+                while (true) {
+                    System.out.println("session.execute start");
+                    try {
+                        session.execute("select * from system.schema_keyspaces limit 1;");
+                        System.out.println("session.execute PASS");
+                    } catch (InvalidQueryException e) {
+                        //ignore, since InvalidQueryException means it's already handled
+                        System.out.println("session.execute PASS");
+                    } catch (Exception e) {
+                        //other illegal exception
+                        System.out.println("session.execute FAIL");
+                        e.printStackTrace();
+                    }
+                    sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static public class Watchdog_New_Session implements Runnable {
+        Session session;
+
+        public Watchdog_New_Session(Cluster cluster) {
+            this.session = cluster.connect();
+        }
+
+        public void run() {
+            System.out.println(this.getClass().getSimpleName()+" running");
             try {
 
                 while (true) {
